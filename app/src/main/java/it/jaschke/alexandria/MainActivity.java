@@ -18,9 +18,10 @@ import android.view.View;
 import android.widget.Toast;
 
 import it.jaschke.alexandria.api.Callback;
+import it.jaschke.alexandria.services.Scanner;
 
 
-public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback {
+public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback,AddBook.addBookCallBack {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -36,6 +37,13 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
 
     public static final String MESSAGE_EVENT = "MESSAGE_EVENT";
     public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
+
+
+    @Override
+    public void scanBook(){
+        Scanner scanner = new Scanner();
+       getSupportFragmentManager().beginTransaction().add(R.id.container, scanner, "Scanner").commit();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
