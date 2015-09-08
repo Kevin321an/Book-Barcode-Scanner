@@ -86,7 +86,18 @@ public class Scanner extends Fragment implements ZXingScannerView.ResultHandler{
         // Do something with the result here
         Log.v(LOG_TAG, rawResult.getText()); // Prints scan results
         Log.v(LOG_TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
+
+        String result =rawResult.getText();
+        if (result!=null){
+            ((scannerCallBack)getActivity()).getResult(result);
+        }
     }
+
+    public interface  scannerCallBack{
+        void getResult(String result);
+    }
+
+
 
 
     //setup barcode format

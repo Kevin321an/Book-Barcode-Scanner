@@ -1,7 +1,6 @@
 package it.jaschke.alexandria;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
@@ -56,6 +54,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
         ean = (EditText) rootView.findViewById(R.id.ean);
 
+
+
         ean.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -69,12 +69,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
             @Override
             public void afterTextChanged(Editable s) {
-                String ean =s.toString();
+                String ean = s.toString();
                 //catch isbn10 numbers
-                if(ean.length()==10 && !ean.startsWith("978")){
-                    ean="978"+ean;
+                if (ean.length() == 10 && !ean.startsWith("978")) {
+                    ean = "978" + ean;
                 }
-                if(ean.length()<13){
+                if (ean.length() < 13) {
                     clearFields();
                     return;
                 }
@@ -84,6 +84,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 bookIntent.setAction(BookService.FETCH_BOOK);
                 getActivity().startService(bookIntent);
                 AddBook.this.restartLoader();
+
+                Toast.makeText(getActivity(), R.string.add_book, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -98,16 +100,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 //when you're done, remove the toast below.
 
                 ((addBookCallBack)getActivity()).scanBook();
-                Context context = getActivity();
-                CharSequence text = "This button should let you scan a book for its barcode!";
-                int duration = Toast.LENGTH_SHORT;
 
-                Toast toast = Toast.makeText(context, text, duration);
-                toast.show();
 
             }
         });
 
+        //save button
         rootView.findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,6 +113,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             }
         });
 
+        //delete button
         rootView.findViewById(R.id.delete_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,7 +130,21 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             ean.setHint("");
         }
 
+
         return rootView;
+    }
+
+    //
+    @Override
+    public void onViewCreated(final View view, final Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+
+        //load bundle created by newInstance(addbook)
+        //this must be run after all views been created otherwise it will show error
+        Bundle a = getArguments();
+        if(a != null){
+            applyResult(a.getString("isbn"));
+        }
     }
     interface addBookCallBack{
         void scanBook();
@@ -208,5 +221,26 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         activity.setTitle(R.string.scan);
+    }
+
+
+    //delivery  isbn under addBook fragment
+    public void applyResult(String result){
+
+        ean = (EditText) getActivity().findViewById(R.id.ean);
+        ean.setText("");
+        ean.setText(result);
+
+    }
+
+
+    //delivery  isbn under without addBook fragment(mostly under Scanner fragment)
+    //initial new instance of the AddBook
+    public static AddBook addbook(String result){
+        Bundle a = new Bundle();
+        a.putString("isbn", result);
+        AddBook newBook = new AddBook();
+        newBook.setArguments(a);
+        return newBook;
     }
 }

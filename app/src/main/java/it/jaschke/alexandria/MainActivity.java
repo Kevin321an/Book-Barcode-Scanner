@@ -21,7 +21,9 @@ import it.jaschke.alexandria.api.Callback;
 import it.jaschke.alexandria.services.Scanner;
 
 
-public class MainActivity extends ActionBarActivity implements NavigationDrawerFragment.NavigationDrawerCallbacks, Callback,AddBook.addBookCallBack {
+public class MainActivity extends ActionBarActivity implements
+        NavigationDrawerFragment.NavigationDrawerCallbacks,
+        Callback,AddBook.addBookCallBack, Scanner.scannerCallBack {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -39,11 +41,7 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
     public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
 
 
-    @Override
-    public void scanBook(){
-        Scanner scanner = new Scanner();
-       getSupportFragmentManager().beginTransaction().add(R.id.container, scanner, "Scanner").commit();
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,6 +182,45 @@ public class MainActivity extends ActionBarActivity implements NavigationDrawerF
             finish();
         }
         super.onBackPressed();
+    }
+
+
+    //callback from AddBook while clicks Scan button
+    @Override
+    public void scanBook(){
+        android.support.v4.app.FragmentTransaction fragementManager = getSupportFragmentManager().beginTransaction();
+
+        //Finds a fragment that was identified by the given tag either when inflated from XML or as supplied when added in a transaction.
+        //Fragment old = getSupportFragmentManager().findFragmentByTag("dialog");
+        //if(old != null){
+        //    fragementManager.remove(old);}
+
+        //Add this transaction to the back stack so as to be able to roll back later
+        fragementManager.addToBackStack(null);
+
+        Scanner scanner = new Scanner();
+        fragementManager.add(R.id.container, scanner, "Scanner").commit();
+    }
+
+    //callback from Scanner
+    @Override
+    public void getResult(String result){
+
+        AddBook addBook=(AddBook)getSupportFragmentManager().findFragmentByTag((getResources().getString(R.string.scan)));
+
+        //fallback from camera screen to Addbook screen
+        getSupportFragmentManager().popBackStack();
+
+        if(addBook != null){
+            addBook.applyResult(result);
+        }
+        else{
+            addBook = AddBook.addbook(result);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, addBook, getResources().getString(R.string.scan))
+                    .commit();
+        }
+
     }
 
 
