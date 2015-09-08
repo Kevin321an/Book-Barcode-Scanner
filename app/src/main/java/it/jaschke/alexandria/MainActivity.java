@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -63,7 +65,8 @@ public class MainActivity extends ActionBarActivity implements
 
         // Set up the drawer.
         navigationDrawerFragment.setUp(R.id.navigation_drawer,
-                    (DrawerLayout) findViewById(R.id.drawer_layout));
+                (DrawerLayout) findViewById(R.id.drawer_layout));
+        checkInternetConnection();
     }
 
     @Override
@@ -71,6 +74,11 @@ public class MainActivity extends ActionBarActivity implements
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment nextFragment;
+
+        if(fragmentManager.findFragmentByTag("Scanner") != null){
+            fragmentManager.popBackStack();
+        }
+
 
         switch (position){
             default:
@@ -222,6 +230,35 @@ public class MainActivity extends ActionBarActivity implements
         }
 
     }
+    /**
+     * Returns true if the network is available or about to become available.
+     *
+     * @param c Context used to get the ConnectivityManager
+     * @return
+     */
+    static public boolean isNetworkAvailable(Context c) {
+        ConnectivityManager cm =
+                (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+    }
+    /*
+      Updates the empty list view with contextually relevant information that the user can
+        use to determine why they aren't seeing weather.
+    */
+    private void checkInternetConnection() {
+        if (!isNetworkAvailable(this)){
+            Toast.makeText(this, R.string.noNetwork_connection, Toast.LENGTH_SHORT).show();
+        }
+
+
+
+    }
+
+
+
 
 
 }

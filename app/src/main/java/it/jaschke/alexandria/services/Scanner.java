@@ -1,6 +1,9 @@
 package it.jaschke.alexandria.services;
 
 
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -79,13 +82,30 @@ public class Scanner extends Fragment implements ZXingScannerView.ResultHandler{
     public void onPause() {
         super.onPause();
         mScannerView.stopCamera();           // Stop camera on pause
+        //closeDialog("Scanner");
     }
+/*
+    public void closeDialog(String tag){
+        FragmentManager fragmentManager=getActivity().getSupportFragmentManager();
+        DialogFragment fragment = (DialogFragment)fragmentManager.findFragmentByTag(tag);
+        if (fragment!=null){
+            fragment.dismiss();
+        }
+
+    }*/
 
     @Override
     public void handleResult(Result rawResult) {
         // Do something with the result here
         Log.v(LOG_TAG, rawResult.getText()); // Prints scan results
         Log.v(LOG_TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
+
+        try{
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getActivity().getApplicationContext(), notification);
+            r.play();
+        }
+        catch(Exception e){ Log.d(LOG_TAG, e.getMessage());}
 
         String result =rawResult.getText();
         if (result!=null){
