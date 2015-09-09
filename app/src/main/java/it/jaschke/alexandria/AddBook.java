@@ -18,7 +18,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
@@ -31,13 +30,13 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
     private final int LOADER_ID = 1;
     private View rootView;
     private final String EAN_CONTENT="eanContent";
-    private static final String SCAN_FORMAT = "scanFormat";
+   /* private static final String SCAN_FORMAT = "scanFormat";
     private static final String SCAN_CONTENTS = "scanContents";
 
     private String mScanFormat = "Format:";
     private String mScanContents = "Contents:";
 
-
+*/
 
     public AddBook(){
     }
@@ -77,9 +76,12 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                     ean = "978" + ean;
                 }
                 if (ean.length() < 13) {
+                    instruction();
                     clearFields();
                     return;
                 }
+                ((TextView) rootView.findViewById(R.id.instruction)).setText("");
+
                 //Once we have an ISBN, start a book intent
                 Intent bookIntent = new Intent(getActivity(), BookService.class);
                 bookIntent.putExtra(BookService.EAN, ean);
@@ -87,7 +89,8 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 getActivity().startService(bookIntent);
                 AddBook.this.restartLoader();
 
-                Toast.makeText(getActivity(), R.string.add_book, Toast.LENGTH_SHORT).show();
+
+                //Toast.makeText(getActivity(), R.string.add_book, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -133,8 +136,13 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         }
 
 
+
         return rootView;
     }
+
+   /* public  interface bookserviceCallBack{
+        void addBookNotification();
+    }*/
 
     //
     @Override
@@ -174,13 +182,14 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 null
         );
     }
-
+    private  static boolean hasaBook;
     @Override
     public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst()) {
+            hasaBook=false;
             return;
         }
-
+        hasaBook=true;
         String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         ((TextView) rootView.findViewById(R.id.bookTitle)).setText(bookTitle);
 
@@ -209,6 +218,11 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
 
     }
 
+    private void instruction(){
+        ((TextView) rootView.findViewById(R.id.instruction)).setText(R.string.isbn_instruction);
+
+
+    }
     private void clearFields(){
         ((TextView) rootView.findViewById(R.id.bookTitle)).setText("");
         ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText("");

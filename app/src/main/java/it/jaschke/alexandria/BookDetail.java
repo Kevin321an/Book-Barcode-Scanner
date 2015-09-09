@@ -30,7 +30,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     private View rootView;
     private String ean;
     private String bookTitle;
-    private ShareActionProvider shareActionProvider;
+    private static ShareActionProvider shareActionProvider;
 
     public BookDetail(){
     }

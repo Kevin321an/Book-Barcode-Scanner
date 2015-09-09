@@ -36,7 +36,14 @@
             android:layout_alignBottom="@+id/ean"
             android:layout_toRightOf="@+id/ean"
             android:layout_toEndOf="@+id/ean"/>
-
+        <TextView
+            android:id="@+id/instruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_below="@+id/scan_button"
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

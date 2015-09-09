@@ -38,6 +38,7 @@ public class BookService extends IntentService {
 
     public static final String EAN = "it.jaschke.alexandria.services.extra.EAN";
 
+
     public BookService() {
         super("Alexandria");
     }
@@ -55,6 +56,22 @@ public class BookService extends IntentService {
             }
         }
     }
+   /* @Override
+    public void addBookNotification(){
+        Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
+        if (hasaBook){
+
+
+            messageIntent.putExtra(MainActivity.MESSAGE_KEY, getResources().getString(R.string.add_book));
+
+        }
+        else {
+            messageIntent.putExtra(MainActivity.MESSAGE_KEY, getResources().getString(R.string.no_book));
+
+        }
+        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
+
+    }*/
 
     /**
      * Handle action Foo in the provided background thread with the provided
@@ -71,6 +88,7 @@ public class BookService extends IntentService {
      * parameters.
      */
     private void fetchBook(String ean) {
+        //hasaBook=false;
 
         if(ean.length()!=13){
             return;
@@ -159,10 +177,13 @@ public class BookService extends IntentService {
         try {
             JSONObject bookJson = new JSONObject(bookJsonString);
             JSONArray bookArray;
+            Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
             if(bookJson.has(ITEMS)){
+               //this message will only show if there is a a book added. While old book will be loaded from liteSQL
+                messageIntent.putExtra(MainActivity.MESSAGE_KEY,getResources().getString(R.string.add_book));
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
                 bookArray = bookJson.getJSONArray(ITEMS);
             }else{
-                Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
                 messageIntent.putExtra(MainActivity.MESSAGE_KEY,getResources().getString(R.string.not_found));
                 LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(messageIntent);
                 return;
