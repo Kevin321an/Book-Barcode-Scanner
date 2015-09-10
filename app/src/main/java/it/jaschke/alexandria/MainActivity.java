@@ -248,7 +248,7 @@ public class MainActivity extends ActionBarActivity implements
       Updates the empty list view with contextually relevant information that the user can
         use to determine why they aren't seeing weather.
     */
-    private void checkInternetConnection() {
+    public void checkInternetConnection() {
         if (!isNetworkAvailable(this)){
             Toast.makeText(this, R.string.noNetwork_connection, Toast.LENGTH_SHORT).show();
         }

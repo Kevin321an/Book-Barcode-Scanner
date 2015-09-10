@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
@@ -82,12 +83,18 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
                 }
                 ((TextView) rootView.findViewById(R.id.instruction)).setText("");
 
-                //Once we have an ISBN, start a book intent
-                Intent bookIntent = new Intent(getActivity(), BookService.class);
-                bookIntent.putExtra(BookService.EAN, ean);
-                bookIntent.setAction(BookService.FETCH_BOOK);
-                getActivity().startService(bookIntent);
-                AddBook.this.restartLoader();
+                if(MainActivity.isNetworkAvailable(getActivity())){
+                    //Once we have an ISBN, start a book intent
+                    Intent bookIntent = new Intent(getActivity(), BookService.class);
+                    bookIntent.putExtra(BookService.EAN, ean);
+                    bookIntent.setAction(BookService.FETCH_BOOK);
+                    getActivity().startService(bookIntent);
+                    AddBook.this.restartLoader();
+                }
+                else{
+                    Toast.makeText(getActivity(), R.string.noNetwork_connection, Toast.LENGTH_SHORT).show();
+                }
+
 
 
                 //Toast.makeText(getActivity(), R.string.add_book, Toast.LENGTH_SHORT).show();
