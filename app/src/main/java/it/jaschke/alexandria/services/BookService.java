@@ -236,7 +236,8 @@ public class BookService extends IntentService {
         ContentValues values= new ContentValues();
         for (int i = 0; i < jsonArray.length(); i++) {
             values.put(AlexandriaContract.AuthorEntry._ID, ean);
-            values.put(AlexandriaContract.AuthorEntry.AUTHOR, jsonArray.getString(i));
+            String author=(jsonArray.getString(i)==null)?"":jsonArray.getString(i);
+            values.put(AlexandriaContract.AuthorEntry.AUTHOR, author);
             getContentResolver().insert(AlexandriaContract.AuthorEntry.CONTENT_URI, values);
             values= new ContentValues();
         }

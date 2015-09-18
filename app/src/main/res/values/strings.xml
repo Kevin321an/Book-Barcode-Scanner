@@ -27,7 +27,9 @@
 
     <string name="add_book">Book has been added</string>
     <string name="no_book">No this book in the library</string>
-<!-- TODO: Remove or change this placeholder text -->
+
+
+
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.
     The original version of this app was built by Sascha Jaschke, and Kevin Zhang implement the barcode scan and fix bugs </string>
 
