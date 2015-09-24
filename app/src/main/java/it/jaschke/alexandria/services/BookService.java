@@ -60,8 +60,6 @@ public class BookService extends IntentService {
     public void addBookNotification(){
         Intent messageIntent = new Intent(MainActivity.MESSAGE_EVENT);
         if (hasaBook){
-
-
             messageIntent.putExtra(MainActivity.MESSAGE_KEY, getResources().getString(R.string.add_book));
 
         }
@@ -236,8 +234,9 @@ public class BookService extends IntentService {
         ContentValues values= new ContentValues();
         for (int i = 0; i < jsonArray.length(); i++) {
             values.put(AlexandriaContract.AuthorEntry._ID, ean);
-            String author=(jsonArray.getString(i)==null)?"":jsonArray.getString(i);
+            String author=(jsonArray.getString(i)!=null)?jsonArray.getString(i):" ";
             values.put(AlexandriaContract.AuthorEntry.AUTHOR, author);
+
             getContentResolver().insert(AlexandriaContract.AuthorEntry.CONTENT_URI, values);
             values= new ContentValues();
         }
